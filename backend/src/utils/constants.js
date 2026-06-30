@@ -1,0 +1,41 @@
+const ORDER_STATUS = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  SHIPPED: 'SHIPPED',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED'
+};
+
+const PAYMENT_STATUS = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  REFUNDED: 'REFUNDED'
+};
+
+const HTTP_STATUS = {
+  OK: 200,
+  CREATED: 201,
+  ACCEPTED: 202,
+  NO_CONTENT: 204,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  INTERNAL_SERVER_ERROR: 500
+};
+
+const API_MESSAGES = {
+  SERVER_HEALTHY: 'Server is running and healthy',
+  DATABASE_CONNECTED: 'Database is connected successfully',
+  DATABASE_DISCONNECTED: 'Database is disconnected',
+  NOT_FOUND: 'Resource not found',
+  INTERNAL_SERVER_ERROR: 'An unexpected error occurred'
+};
+
+module.exports = {
+  ORDER_STATUS,
+  PAYMENT_STATUS,
+  HTTP_STATUS,
+  API_MESSAGES
+};
