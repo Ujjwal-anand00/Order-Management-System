@@ -51,6 +51,16 @@ const runScheduler = async () => {
 
     const now = Date.now();
 
+    const placedMins = process.env.ORDER_STATUS_PLACED_TIMEOUT_MINS !== undefined && process.env.ORDER_STATUS_PLACED_TIMEOUT_MINS !== ''
+      ? parseInt(process.env.ORDER_STATUS_PLACED_TIMEOUT_MINS, 10)
+      : 10;
+    const processingMins = process.env.ORDER_STATUS_PROCESSING_TIMEOUT_MINS !== undefined && process.env.ORDER_STATUS_PROCESSING_TIMEOUT_MINS !== ''
+      ? parseInt(process.env.ORDER_STATUS_PROCESSING_TIMEOUT_MINS, 10)
+      : 20;
+
+    const placedTimeoutMs = (isNaN(placedMins) ? 10 : placedMins) * 60 * 1000;
+    const processingTimeoutMs = (isNaN(processingMins) ? 20 : processingMins) * 60 * 1000;
+
     // 4. Evaluate and update each order
     for (const order of eligibleOrders) {
       totalChecked++;
@@ -62,16 +72,16 @@ const runScheduler = async () => {
         const ageMs = now - new Date(order.updatedAt).getTime();
 
         if (order.currentOrderStatus === ORDER_STATUS.PLACED) {
-          // PLACED -> PROCESSING after 10 minutes (10 * 60 * 1000 ms)
-          if (ageMs >= 10 * 60 * 1000) {
+          // PLACED -> PROCESSING after configurable minutes
+          if (ageMs >= placedTimeoutMs) {
             targetStatus = ORDER_STATUS.PROCESSING;
-            changeReason = 'Automatic status progression: PLACED to PROCESSING after 10 minutes';
+            changeReason = `Automatic status progression: PLACED to PROCESSING after ${placedMins} minutes`;
           }
         } else if (order.currentOrderStatus === ORDER_STATUS.PROCESSING) {
-          // PROCESSING -> READY_TO_SHIP after 20 minutes (20 * 60 * 1000 ms)
-          if (ageMs >= 20 * 60 * 1000) {
+          // PROCESSING -> READY_TO_SHIP after configurable minutes
+          if (ageMs >= processingTimeoutMs) {
             targetStatus = ORDER_STATUS.READY_TO_SHIP;
-            changeReason = 'Automatic status progression: PROCESSING to READY_TO_SHIP after 20 minutes';
+            changeReason = `Automatic status progression: PROCESSING to READY_TO_SHIP after ${processingMins} minutes`;
           }
         }
 
