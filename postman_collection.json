@@ -1,0 +1,237 @@
+{
+	"info": {
+		"_postman_id": "8482594a-810a-4bf3-b049-51d2f92b77dd",
+		"name": "Order Management System API",
+		"description": "API collection for managing orders, order status histories, and the automatic transition scheduler.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "System Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/health",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Order",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"customerName\": \"John Doe\",\n  \"phoneNumber\": \"+15551234567\",\n  \"productName\": \"Wireless Headphones\",\n  \"amount\": 99.99,\n  \"paymentStatus\": \"PENDING\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/orders",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Orders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/orders?page=1&limit=10&status=PLACED&search=John",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"orders"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						},
+						{
+							"key": "status",
+							"value": "PLACED"
+						},
+						{
+							"key": "search",
+							"value": "John"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Single Order",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/orders/ORD-B3A9C8D1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"orders",
+						"ORD-B3A9C8D1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Order",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"customerName\": \"Johnathan Doe\",\n  \"amount\": 120.00\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/orders/ORD-B3A9C8D1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"orders",
+						"ORD-B3A9C8D1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Order",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/orders/ORD-B3A9C8D1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"orders",
+						"ORD-B3A9C8D1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Run Scheduler",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-scheduler-key",
+						"value": "{{scheduler_secret}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/scheduler/run",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"scheduler",
+						"run"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Scheduler Logs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/scheduler/logs?page=1&limit=10",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"scheduler",
+						"logs"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "scheduler_secret",
+			"value": "dev_scheduler_secret_key",
+			"type": "string"
+		}
+	]
+}
