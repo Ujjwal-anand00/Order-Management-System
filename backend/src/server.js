@@ -2,6 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const app = require('./app');
 const connectDB = require('./config/db');
+const { startCronScheduler } = require('./cron/scheduler');
 
 const port = process.env.PORT || 5000;
 
@@ -9,6 +10,7 @@ connectDB();
 
 const server = app.listen(port, () => {
   console.log(`Server is running in ${process.env.NODE_ENV} mode on port ${port}`);
+  startCronScheduler();
 });
 
 const gracefulShutdown = (signal) => {
