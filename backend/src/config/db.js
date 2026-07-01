@@ -1,30 +1,24 @@
 const mongoose = require('mongoose');
 
-/**
- * Helper to establish connection to MongoDB database
- * @returns {Promise<Object>} Mongoose connection instance
- */
 const connectDB = async () => {
   const uri = process.env.MONGODB_URI;
   if (!uri) {
     throw new Error('MONGODB_URI environment variable is missing.');
   }
 
-  // Connection options to fail fast on outages and specify fallback DB name
   const options = {
-    serverSelectionTimeoutMS: 5000, // Wait max 5 seconds before timeout (instead of 30 seconds)
-    dbName: 'order_management_system' // Fallback db name if not specified in URI string
+    serverSelectionTimeoutMS: 5000,
+    dbName: 'order_management_system'
   };
 
   try {
-    console.log('Connecting to MongoDB database...');
+    console.log('Connecting to MongoDB...');
     const conn = await mongoose.connect(uri, options);
-    console.log(`MongoDB Connected successfully: ${conn.connection.host}`);
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
     return conn;
   } catch (error) {
     let advisory = '';
     
-    // Check if error is related to Atlas connectivity / Server selection
     if (
       error.name === 'MongooseServerSelectionError' ||
       error.message.includes('Could not connect to any servers') ||
