@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const { sendSuccess } = require('../../utils/apiResponse');
 const { HTTP_STATUS } = require('../../utils/constants');
 const orderRoutes = require('./orderRoutes');
+const schedulerRoutes = require('./schedulerRoutes');
 
 const router = express.Router();
 
@@ -21,5 +22,6 @@ router.get('/health', (req, res) => {
 });
 
 router.use('/orders', orderRoutes);
+router.use('/scheduler', schedulerRoutes);
 
 module.exports = router;
