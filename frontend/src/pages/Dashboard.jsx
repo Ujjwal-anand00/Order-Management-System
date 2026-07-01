@@ -7,9 +7,10 @@ import OrdersTable from '../components/OrdersTable';
 import LoadingState from '../components/LoadingState';
 import EmptyState from '../components/EmptyState';
 import ErrorState from '../components/ErrorState';
+import CreateOrderModal from '../components/CreateOrderModal';
 
 /**
- * Main Application Dashboard page supporting Orders list (with search and page actions)
+ * Main Application Dashboard page supporting Orders list (with search, pagination and creation)
  * and Scheduler execution history logs.
  */
 const Dashboard = () => {
@@ -26,6 +27,10 @@ const Dashboard = () => {
   const [ordersLoading, setOrdersLoading] = useState(true);
   const [ordersRefreshing, setOrdersRefreshing] = useState(false);
   const [ordersError, setOrdersError] = useState(null);
+
+  // --- Create Order & Toast Overlay States ---
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState(null);
 
   // --- Scheduler Logs State Management ---
   const [logs, setLogs] = useState([]);
@@ -94,6 +99,16 @@ const Dashboard = () => {
     }
   }, [logsPage, activeTab]);
 
+  // Toast banner auto fade-out
+  useEffect(() => {
+    if (toastMessage) {
+      const timer = setTimeout(() => {
+        setToastMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toastMessage]);
+
   // Trigger search execution
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -130,6 +145,13 @@ const Dashboard = () => {
     return `${diff}ms`;
   };
 
+  // Callback when order creation completes successfully
+  const handleCreateSuccess = () => {
+    setToastMessage('Order created successfully.');
+    setOrdersPage(1);
+    loadOrders(false);
+  };
+
   return (
     <>
       {/* Top Navigation / Brand Header */}
@@ -140,17 +162,27 @@ const Dashboard = () => {
         </div>
         <div className="controls-group">
           {activeTab === 'orders' ? (
-            <button
-              type="button"
-              className="btn"
-              onClick={() => loadOrders(true)}
-              disabled={ordersLoading || ordersRefreshing}
-            >
-              <span className={`refresh-icon ${ordersRefreshing ? 'spin' : ''}`} style={{ display: 'inline-block' }}>
-                🔄
-              </span>
-              {ordersRefreshing ? 'Refreshing...' : 'Refresh Orders'}
-            </button>
+            <>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => setIsModalOpen(true)}
+                style={{ marginRight: '8px' }}
+              >
+                + Create Order
+              </button>
+              <button
+                type="button"
+                className="btn"
+                onClick={() => loadOrders(true)}
+                disabled={ordersLoading || ordersRefreshing}
+              >
+                <span className={`refresh-icon ${ordersRefreshing ? 'spin' : ''}`} style={{ display: 'inline-block' }}>
+                  🔄
+                </span>
+                {ordersRefreshing ? 'Refreshing...' : 'Refresh Orders'}
+              </button>
+            </>
           ) : (
             <button
               type="button"
@@ -390,6 +422,23 @@ const Dashboard = () => {
           </>
         )}
       </main>
+
+      {/* Create Order Modal dialog popup */}
+      <CreateOrderModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={handleCreateSuccess}
+      />
+
+      {/* Dynamic Toaster Success Banners */}
+      {toastMessage && (
+        <div className="toast-container">
+          <div className="toast">
+            <span>✅</span>
+            {toastMessage}
+          </div>
+        </div>
+      )}
 
       {/* Page Footer */}
       <footer
