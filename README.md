@@ -116,4 +116,41 @@ This system is provider-independent and prepares the server for major cloud exec
   2. Configure your cloud cron provider to trigger an HTTP POST request targeting `https://<your-app-domain>/api/v1/scheduler/run` every 5 minutes.
   3. Include the secret key header `x-scheduler-key: <your_secret>` in the cloud task configuration to authorize request access.
 
+---
+
+## 6. Frontend React Dashboard
+
+### Overview & Setup
+The React dashboard provides a responsive administrator portal to monitor, filter, and refresh order processing statuses.
+
+#### Local Installation & Development
+1. Navigate to the `frontend` folder:
+   ```bash
+   cd frontend
+   ```
+2. Install runtime and development dependencies:
+   ```bash
+   npm install
+   ```
+3. Establish your environment configurations in `frontend/.env` (based on `frontend/.env.example`):
+   ```env
+   VITE_API_URL=http://localhost:5000/api/v1
+   ```
+4. Spin up the Vite development server:
+   ```bash
+   npm run dev
+   ```
+5. Build production bundle assets:
+   ```bash
+   npm run build
+   ```
+
+### Core Features & Architecture
+- **API Service Layer**: Decoupled network clients in `services/api.js` requesting orders lists and status updates from the backend using environment configurations.
+- **Dynamic Status Filtering**: Employs backend-driven filtering rather than local computation. Changing the status dropdown initiates standard API query parameters.
+- **Refresh Action**: Re-requests the database records with loading overlays, disabling interaction controls to prevent concurrent trigger actions.
+- **Loading, Empty, & Error Boundaries**: Utilizes custom loaders, empty package icons, and failed request alerts with click-to-retry handlers.
+- **Responsive Table-to-Card Grid**: Automatically transforms the standard wide grid table layout into individual stacked block cards on mobile screens ($\le$ 768px) to prevent layout breakages.
+
+
 
