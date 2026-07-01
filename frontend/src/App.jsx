@@ -1,4 +1,3 @@
-import React from 'react';
 import Dashboard from './pages/Dashboard';
 import './App.css'; // Clear default styles if needed, or keep for other styles
 

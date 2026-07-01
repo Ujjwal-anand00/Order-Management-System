@@ -1,4 +1,3 @@
-import React from 'react';
 
 /**
  * Helper to get Order Status Badge CSS class name

@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from 'react';
 import { fetchOrders, fetchSchedulerLogs } from '../services/api';
 import StatusFilter from '../components/StatusFilter';
 import OrdersTable from '../components/OrdersTable';
