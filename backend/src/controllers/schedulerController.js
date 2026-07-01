@@ -37,6 +37,16 @@ const runScheduler = asyncHandler(async (req, res) => {
   );
 });
 
+/**
+ * Controller to retrieve paginated scheduler execution logs
+ */
+const getSchedulerLogs = asyncHandler(async (req, res) => {
+  const { page, limit } = req.query;
+  const result = await schedulerService.getSchedulerLogs({ page, limit });
+  sendSuccess(res, HTTP_STATUS.OK, result, 'Scheduler logs retrieved successfully');
+});
+
 module.exports = {
-  runScheduler
+  runScheduler,
+  getSchedulerLogs
 };

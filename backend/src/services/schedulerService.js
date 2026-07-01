@@ -151,6 +151,35 @@ const runScheduler = async () => {
   }
 };
 
+/**
+ * Retrieve paginated scheduler execution logs sorted by latest first
+ * @param {Object} queryOptions - pagination options (page, limit)
+ * @returns {Promise<Object>} Object containing logs list and pagination info
+ */
+const getSchedulerLogs = async (queryOptions) => {
+  const page = Math.max(1, parseInt(queryOptions.page, 10) || 1);
+  const limit = Math.max(1, Math.min(100, parseInt(queryOptions.limit, 10) || 10));
+  const skip = (page - 1) * limit;
+
+  const logs = await SchedulerLog.find({})
+    .sort({ startTime: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  const total = await SchedulerLog.countDocuments({});
+
+  return {
+    items: logs,
+    pagination: {
+      total,
+      page,
+      limit,
+      pages: Math.ceil(total / limit)
+    }
+  };
+};
+
 module.exports = {
-  runScheduler
+  runScheduler,
+  getSchedulerLogs
 };

@@ -8,4 +8,7 @@ const router = express.Router();
 // Secured using secret key validation header
 router.post('/run', protectScheduler, schedulerController.runScheduler);
 
+// GET /api/v1/scheduler/logs
+router.get('/logs', schedulerController.getSchedulerLogs);
+
 module.exports = router;
