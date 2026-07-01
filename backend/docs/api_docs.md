@@ -270,3 +270,54 @@ Deletes an order permanently from the system.
   "message": "Order deleted successfully"
 }
 ```
+
+---
+
+### 2.6. Run Scheduler
+Triggers the automatic status transition scheduler. Evaluates eligible active orders (`PLACED`, `PROCESSING`), updates statuses based on age thresholds, creates status histories, and records execution logs.
+
+* **URL**: `/api/v1/scheduler/run`
+* **Method**: `POST`
+* **Headers**:
+  * `x-scheduler-key` (String, required): Secret key matching the configured `SCHEDULER_SECRET_KEY` on the server.
+
+#### Example Request
+`POST /api/v1/scheduler/run` with header `x-scheduler-key: dev_scheduler_secret_key`
+
+#### Example Response - Successful Execution (200 OK)
+```json
+{
+  "status": "success",
+  "data": {
+    "totalOrdersChecked": 5,
+    "totalOrdersUpdated": 2,
+    "durationMs": 18,
+    "status": "SUCCESS"
+  },
+  "message": "Scheduler execution completed successfully"
+}
+```
+
+#### Example Response - Skipped due to active running lock (200 OK)
+```json
+{
+  "status": "success",
+  "data": {
+    "totalOrdersChecked": 0,
+    "totalOrdersUpdated": 0,
+    "durationMs": 0,
+    "status": "SKIPPED",
+    "reason": "Another scheduler job is currently running"
+  },
+  "message": "Scheduler execution skipped: another job is running"
+}
+```
+
+#### Example Response - Unauthorized (401 Unauthorized)
+```json
+{
+  "status": "fail",
+  "message": "Unauthorized: Invalid scheduler secret key"
+}
+```
+
