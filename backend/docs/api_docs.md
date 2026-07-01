@@ -321,3 +321,69 @@ Triggers the automatic status transition scheduler. Evaluates eligible active or
 }
 ```
 
+---
+
+### 2.7. Get Scheduler Logs
+Retrieves a paginated list of all scheduler execution logs.
+
+* **URL**: `/api/v1/scheduler/logs`
+* **Method**: `GET`
+* **Query Parameters**:
+  * `page` (Number, optional, default: `1`): Page number (min: 1).
+  * `limit` (Number, optional, default: `10`): Items per page (min: 1, max: 100).
+
+#### Example Request
+`GET /api/v1/scheduler/logs?page=1&limit=2`
+
+#### Example Response (200 OK)
+```json
+{
+  "status": "success",
+  "data": {
+    "items": [
+      {
+        "_id": "64a0f4e3c799a4e321528b99",
+        "startTime": "2026-07-01T11:13:48.123Z",
+        "endTime": "2026-07-01T11:13:48.135Z",
+        "totalOrdersChecked": 10,
+        "totalOrdersUpdated": 2,
+        "status": "SUCCESS",
+        "errorMessage": ""
+      },
+      {
+        "_id": "64a0f4e3c799a4e321528b98",
+        "startTime": "2026-07-01T11:08:48.111Z",
+        "endTime": "2026-07-01T11:08:48.129Z",
+        "totalOrdersChecked": 8,
+        "totalOrdersUpdated": 0,
+        "status": "SUCCESS",
+        "errorMessage": ""
+      }
+    ],
+    "pagination": {
+      "total": 12,
+      "page": 1,
+      "limit": 2,
+      "pages": 6
+    }
+  },
+  "message": "Scheduler logs retrieved successfully"
+}
+```
+
+---
+
+## 3. Postman Collection
+
+A pre-configured Postman Collection is included in the project root:
+- File: [postman_collection.json](file:///c:/Users/acer/OneDrive/Desktop/order-management-system/postman_collection.json)
+
+### Importing to Postman:
+1. Open Postman.
+2. Click **Import** in the top left.
+3. Select and upload the [postman_collection.json](file:///c:/Users/acer/OneDrive/Desktop/order-management-system/postman_collection.json) file.
+4. Set the Collection variables as needed:
+   - `base_url`: Endpoint suffix (default: `http://localhost:5000/api/v1`).
+   - `scheduler_secret`: Key for trigger POST requests (default: `dev_scheduler_secret_key`).
+
+
