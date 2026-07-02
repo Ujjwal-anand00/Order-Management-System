@@ -909,5 +909,45 @@ body {
   to { opacity: 0; }
 }
 
+/* Action buttons styles in the table */
+.btn-action {
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+}
+
+.btn-action:hover {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+}
+
+.btn-action:active {
+  transform: translateY(0);
+}
+
+/* Actions column styling on mobile */
+@media (max-width: 768px) {
+  .orders-table td:nth-child(9) {
+    grid-column: span 2;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 12px !important;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: row !important;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+
 
 

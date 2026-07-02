@@ -1,13 +1,14 @@
-/* eslint-disable react-hooks/set-state-in-effect */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
-import { fetchOrders, fetchSchedulerLogs } from '../services/api';
+import { fetchOrders, fetchSchedulerLogs, deleteOrder } from '../services/api';
 import StatusFilter from '../components/StatusFilter';
 import OrdersTable from '../components/OrdersTable';
 import LoadingState from '../components/LoadingState';
 import EmptyState from '../components/EmptyState';
 import ErrorState from '../components/ErrorState';
 import CreateOrderModal from '../components/CreateOrderModal';
+import ViewOrderModal from '../components/ViewOrderModal';
+import EditOrderModal from '../components/EditOrderModal';
+import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
 
 /**
  * Main Application Dashboard page supporting Orders list (with search, pagination and creation)
@@ -31,6 +32,14 @@ const Dashboard = () => {
   // --- Create Order & Toast Overlay States ---
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
+  const [toastType, setToastType] = useState('success'); // 'success' | 'error'
+
+  // --- View, Edit, Delete Modal & Action States ---
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   // --- Scheduler Logs State Management ---
   const [logs, setLogs] = useState([]);
@@ -147,9 +156,35 @@ const Dashboard = () => {
 
   // Callback when order creation completes successfully
   const handleCreateSuccess = () => {
+    setToastType('success');
     setToastMessage('Order created successfully.');
     setOrdersPage(1);
     loadOrders(false);
+  };
+
+  // Callback when order edit completes successfully
+  const handleEditSuccess = () => {
+    setToastType('success');
+    setToastMessage('Order updated successfully.');
+    loadOrders(false);
+  };
+
+  // Callback when order delete is confirmed and executed
+  const handleDeleteConfirm = async () => {
+    if (!selectedOrder) return;
+    setDeleteLoading(true);
+    try {
+      await deleteOrder(selectedOrder.orderId);
+      setToastType('success');
+      setToastMessage('Order deleted successfully.');
+      setIsDeleteOpen(false);
+      loadOrders(false);
+    } catch (err) {
+      setToastType('error');
+      setToastMessage(err.message || 'Failed to delete order. Please try again.');
+    } finally {
+      setDeleteLoading(false);
+    }
   };
 
   return (
@@ -283,7 +318,21 @@ const Dashboard = () => {
               </div>
             ) : (
               <div className="card-table-wrapper">
-                <OrdersTable orders={orders} />
+                <OrdersTable
+                  orders={orders}
+                  onView={(order) => {
+                    setSelectedOrder(order);
+                    setIsViewOpen(true);
+                  }}
+                  onEdit={(order) => {
+                    setSelectedOrder(order);
+                    setIsEditOpen(true);
+                  }}
+                  onDelete={(order) => {
+                    setSelectedOrder(order);
+                    setIsDeleteOpen(true);
+                  }}
+                />
                 
                 {/* Orders Pagination Footer */}
                 <div className="pagination-row">
@@ -430,11 +479,47 @@ const Dashboard = () => {
         onSuccess={handleCreateSuccess}
       />
 
-      {/* Dynamic Toaster Success Banners */}
+      {/* View Order Details Modal dialog popup */}
+      <ViewOrderModal
+        isOpen={isViewOpen}
+        order={selectedOrder}
+        onClose={() => {
+          setIsViewOpen(false);
+          setSelectedOrder(null);
+        }}
+      />
+
+      {/* Edit Order Modal dialog popup */}
+      <EditOrderModal
+        isOpen={isEditOpen}
+        order={selectedOrder}
+        onClose={() => {
+          setIsEditOpen(false);
+          setSelectedOrder(null);
+        }}
+        onSuccess={handleEditSuccess}
+      />
+
+      {/* Delete Confirmation Modal dialog popup */}
+      <DeleteConfirmationModal
+        isOpen={isDeleteOpen}
+        order={selectedOrder}
+        onClose={() => {
+          setIsDeleteOpen(false);
+          setSelectedOrder(null);
+        }}
+        onConfirm={handleDeleteConfirm}
+        loading={deleteLoading}
+      />
+
+      {/* Dynamic Toaster Success/Error Banners */}
       {toastMessage && (
         <div className="toast-container">
-          <div className="toast">
-            <span>✅</span>
+          <div className="toast" style={toastType === 'error' ? {
+            borderColor: 'var(--color-failed-border)',
+            color: 'var(--color-failed-text)'
+          } : undefined}>
+            <span>{toastType === 'error' ? '❌' : '✅'}</span>
             {toastMessage}
           </div>
         </div>

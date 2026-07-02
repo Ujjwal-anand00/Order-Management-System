@@ -62,8 +62,11 @@ const formatCurrency = (value) => {
  * OrdersTable Component
  * @param {Object} props - props
  * @param {Array} props.orders - Array of order items
+ * @param {Function} props.onView - Callback for viewing an order
+ * @param {Function} props.onEdit - Callback for editing an order
+ * @param {Function} props.onDelete - Callback for deleting an order
  */
-const OrdersTable = ({ orders }) => {
+const OrdersTable = ({ orders, onView, onEdit, onDelete }) => {
   return (
     <div className="card-table-wrapper">
       <table className="orders-table">
@@ -77,6 +80,7 @@ const OrdersTable = ({ orders }) => {
             <th>Order Status</th>
             <th>Payment Status</th>
             <th>Created Time</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -111,6 +115,37 @@ const OrdersTable = ({ orders }) => {
               </td>
               <td data-label="Created Time">
                 <span>{formatDate(order.createdAt)}</span>
+              </td>
+              <td data-label="Actions">
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <button
+                    type="button"
+                    className="btn-action"
+                    onClick={() => onView(order)}
+                    title="View Details"
+                    aria-label={`View details of order ${order.orderId}`}
+                  >
+                    👁
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-action"
+                    onClick={() => onEdit(order)}
+                    title="Edit Order"
+                    aria-label={`Edit order ${order.orderId}`}
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-action"
+                    onClick={() => onDelete(order)}
+                    title="Delete Order"
+                    aria-label={`Delete order ${order.orderId}`}
+                  >
+                    🗑
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

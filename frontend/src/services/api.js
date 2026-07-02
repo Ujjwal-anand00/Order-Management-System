@@ -110,3 +110,78 @@ export const createOrder = async (orderData) => {
   }
 };
 
+/**
+ * Fetch a single order by its ID
+ * @param {string} orderId - Unique order ID
+ * @returns {Promise<Object>} The order document data
+ */
+export const getOrderById = async (orderId) => {
+  const url = `${API_URL}/orders/${orderId}`;
+  try {
+    const response = await fetch(url);
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to fetch order details');
+    }
+    if (result.status === 'success' && result.data) {
+      return result.data;
+    }
+    throw new Error('Invalid response payload');
+  } catch (error) {
+    console.error(`Error fetching order ${orderId}:`, error.message);
+    throw error;
+  }
+};
+
+/**
+ * Update an existing order by its ID
+ * @param {string} orderId - Unique order ID
+ * @param {Object} orderData - Fields to update
+ * @returns {Promise<Object>} Updated order document data
+ */
+export const updateOrder = async (orderId, orderData) => {
+  const url = `${API_URL}/orders/${orderId}`;
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(orderData)
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to update order');
+    }
+    if (result.status === 'success' && result.data) {
+      return result.data;
+    }
+    throw new Error('Invalid response payload');
+  } catch (error) {
+    console.error(`Error updating order ${orderId}:`, error.message);
+    throw error;
+  }
+};
+
+/**
+ * Delete an order by its ID
+ * @param {string} orderId - Unique order ID
+ * @returns {Promise<Object>} Response data
+ */
+export const deleteOrder = async (orderId) => {
+  const url = `${API_URL}/orders/${orderId}`;
+  try {
+    const response = await fetch(url, {
+      method: 'DELETE'
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to delete order');
+    }
+    return result;
+  } catch (error) {
+    console.error(`Error deleting order ${orderId}:`, error.message);
+    throw error;
+  }
+};
+

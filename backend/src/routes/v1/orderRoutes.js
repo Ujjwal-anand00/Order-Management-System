@@ -48,6 +48,7 @@ router.route('/')
 
 router.route('/:orderId')
   .get(orderController.getOrderById)
+  .put(validate(updateOrderSchema, 'body'), orderController.updateOrder)
   .patch(validate(updateOrderSchema, 'body'), orderController.updateOrder)
   .delete(orderController.deleteOrder);
 
